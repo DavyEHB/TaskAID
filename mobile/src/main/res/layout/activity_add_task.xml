@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/tv_task_name"
+        android:id="@+id/tvAddTaskName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10sp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etAddTaskName"
+        android:layout_gravity="center_vertical"
+        android:layout_above="@+id/tvAddBeaconAddress"
+        android:layout_toEndOf="@+id/tvAddTaskName"
+        android:inputType="textCapSentences"
+        android:lines="1"
+        android:maxLines="1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/tv_beacon_address"
+        android:id="@+id/tvAddBeaconAddress"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:layout_below="@+id/tvAddTaskName"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/dummy_beacon_address"
+        android:id="@+id/tvBeaconAddress"
+        android:layout_gravity="center_vertical"
+        android:layout_alignTop="@+id/tvAddBeaconAddress"
+        android:layout_toEndOf="@+id/tvAddBeaconAddress"
+        android:onClick="onTvBeaconAddressClick"
+        android:editable="true" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tvAddBeaconAddress"
+        android:layout_above="@+id/linearLayout3">
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/lvAddTaskCards"
+            android:choiceMode="singleChoice" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/no_cards"
+            android:id="@+id/tvEmptyCard"
+            android:layout_gravity="center"
+            android:gravity="center_vertical|center|center_horizontal" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:id="@+id/linearLayout3">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:id="@+id/btnAddTaskAdd"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10sp"
+            android:onClick="onBtnAddClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:id="@+id/btnAddTaskCancel"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:onClick="onBtnCancelClick"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+    android:onClick="onBtnUpdateClick">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Insert"
+        android:id="@+id/btnInsert"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnInsertClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GetByID"
+        android:id="@+id/btnGetByID"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnGetByIDClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GetAll"
+        android:id="@+id/btnGetAll"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnGetAllClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GetByTaskID"
+        android:id="@+id/btnGetByTaskID"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnGetByTaskID" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/btnDelete"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnDeleteClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:id="@+id/btnUpdate"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnUpdateClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="InsertAll"
+        android:id="@+id/btnInsertAll"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnInsertAll" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ReadAll"
+        android:id="@+id/btnReadAll"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnReadAllClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ClearDB"
+        android:id="@+id/btnClearDB"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onBtnClearDB" />
+</LinearLayout>

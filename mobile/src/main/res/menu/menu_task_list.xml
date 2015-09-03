@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_add_task"
+        android:title="@string/action_add_task"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/menu_remove_task"
+        android:title="@string/action_remove_task"
+        android:orderInCategory="101"
+        android:visible="false"
+        android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/menu_cancel_remove"
+        android:title="@string/action_cancel_remove"
+        android:orderInCategory="101"
+        android:visible="false"
+        android:showAsAction="ifRoom|withText"/>
+</menu>

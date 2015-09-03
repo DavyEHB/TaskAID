@@ -1,0 +1,64 @@
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DBTest"
+            android:id="@+id/btnDBTest"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnDBTestClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TaskList"
+            android:id="@+id/btnTaskList"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnTaskListClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DeviceList"
+            android:id="@+id/btnDevList"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnDevListClick"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Task"
+            android:id="@+id/btnAddTask"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnAddTask"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Card"
+            android:id="@+id/btnAddCard"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnAddCard"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Service"
+            android:id="@+id/btnStartService"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnStartService"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Service"
+            android:id="@+id/btnStopService"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnStopService"/>
+    </LinearLayout>
+
