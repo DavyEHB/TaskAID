@@ -69,11 +69,13 @@ public class AddTaskActivity extends Activity {
                     newCard.setTaskID(taskID);
                     newCard.setOrder(cardListAdapter.getCount() + 1);
                     cardListAdapter.addCard(newCard);
+                    invalidateOptionsMenu();
                     Log.d(TAG, "New card: " + newCard.toString() );
                     break;
                 case EDIT_CARD:
                     Card editCard = (Card) data.getSerializableExtra(AddCardActivity.CARD);
                     cardListAdapter.update(editCard);
+                    invalidateOptionsMenu();
                      Log.d(TAG, "Edit card: ");
                     break;
             }
@@ -106,9 +108,11 @@ public class AddTaskActivity extends Activity {
 
         lvAddTaskCards.setEmptyView(tvEmptyCard);
         lvAddTaskCards.setAdapter(cardListAdapter);
+        lvAddTaskCards.setClickable(true);
         lvAddTaskCards.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Log.d(TAG,"List Clicked");
                 if (!cardListAdapter.isRemovable){
                     Intent intent = new Intent(getApplicationContext(),AddCardActivity.class);
                     Card card = cardListAdapter.getCard(position);
@@ -134,6 +138,11 @@ public class AddTaskActivity extends Activity {
                 btnAdd.setText(R.string.edit);
             }
         } else {
+
+            if (getIntent().getFlags() == EDIT_FLAG){
+                getActionBar().setTitle(R.string.edit);
+                btnAdd.setText(R.string.edit);
+            }
 
             cardListAdapter.setRemovable(savedInstanceState.getBoolean(IS_REMOVABLE));
             edNewName.setText(savedInstanceState.getString(TASK_NAME));

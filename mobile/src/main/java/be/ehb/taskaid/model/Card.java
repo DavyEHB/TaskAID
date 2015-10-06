@@ -20,7 +20,7 @@ import java.io.Serializable;
  */
 public class Card implements Serializable {
 
-    private static final int MAX_WIDTH = 600;
+    private static final int MAX_WIDTH = 400;
     private static final String TAG = "CARD";
     private int ID;
     private String text;

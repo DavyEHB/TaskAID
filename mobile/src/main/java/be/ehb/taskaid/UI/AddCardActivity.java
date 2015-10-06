@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -17,11 +18,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 import be.ehb.taskaid.R;
 import be.ehb.taskaid.model.Card;
+import be.ehb.taskaid.service.CardFileContentProvider;
 
 public class AddCardActivity extends Activity {
 
@@ -34,6 +40,9 @@ public class AddCardActivity extends Activity {
     private static final String TAG = "ADD_CARD_ACTIVITY";
     private static final int SELECT_PHOTO = 2;
 
+    private static final String CARD_NAME = "card_name";
+    private static final String CARD_PICTURE = "card_picture";
+
 
     private TextView tvCardText;
     private ImageView imCardPicture;
@@ -42,7 +51,7 @@ public class AddCardActivity extends Activity {
 
 
     private Card card;
-    private Bitmap cardPicture;
+    private Bitmap cardPicture = null;
 
 
     @Override
@@ -53,26 +62,54 @@ public class AddCardActivity extends Activity {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         tvCardText = (TextView) findViewById(R.id.tvCardText);
+        tvCardText.setVisibility(View.INVISIBLE);
         imCardPicture = (ImageView) findViewById(R.id.imCardPicture);
         btnAdd = (Button) findViewById(R.id.btnAdd);
         edCardText = (EditText) findViewById(R.id.edCardText);
-        edCardText.setText("");
+        edCardText.setVisibility(View.VISIBLE);
 
 
-        switch (getIntent().getFlags()) {
-            case EDIT_FLAG:
-                card = (Card) getIntent().getSerializableExtra(CARD);
+        if (savedInstanceState == null){
+            switch (getIntent().getFlags()) {
+                case EDIT_FLAG:
+                    card = (Card) getIntent().getSerializableExtra(CARD);
 
-                tvCardText.setText(card.getText());
-                edCardText.setText(card.getText());
-                imCardPicture.setImageBitmap(card.getPicture());
+                     edCardText.setText(card.getText());
+                    if (card.getPicture() != null) {
+                        imCardPicture.setImageBitmap(card.getPicture());
+                    }
 
-                getActionBar().setTitle(R.string.edit);
-                btnAdd.setText(R.string.edit);
-                break;
-            case ADD_FLAG:
-                card = new Card();
-                break;
+                    getActionBar().setTitle(R.string.edit);
+                    btnAdd.setText(R.string.edit);
+                    break;
+                case ADD_FLAG:
+                    card = new Card();
+                    break;
+            }
+        } else {
+            switch (getIntent().getFlags()) {
+                case EDIT_FLAG:
+                    card = (Card) getIntent().getSerializableExtra(CARD);
+
+                    edCardText.setText(savedInstanceState.getString(CARD_NAME));
+                    cardPicture = savedInstanceState.getParcelable(CARD_PICTURE);
+                    if (cardPicture != null) {
+                        imCardPicture.setImageBitmap(cardPicture);
+                    }
+
+                    getActionBar().setTitle(R.string.edit);
+                    btnAdd.setText(R.string.edit);
+                    break;
+                case ADD_FLAG:
+                    card = new Card();
+
+                    edCardText.setText(savedInstanceState.getString(CARD_NAME));
+                    cardPicture = savedInstanceState.getParcelable(CARD_PICTURE);
+                    if (cardPicture != null) {
+                        imCardPicture.setImageBitmap(cardPicture);
+                    }
+                    break;
+            }
         }
 
     }
@@ -140,15 +177,11 @@ public class AddCardActivity extends Activity {
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        Uri selectedImage = data.getData();
-                        InputStream imageStream = getContentResolver().openInputStream(Uri.parse(selectedImage.toString()));
-                        cardPicture = BitmapFactory.decodeStream(imageStream);
-                        imCardPicture.setImageBitmap(cardPicture);
-                        Log.d("FILE", selectedImage.toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    File file = new File(getFilesDir(), CardFileContentProvider.FILE_NAME);
+                    Log.d(TAG, "File: " + file.toString());
+                    cardPicture = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    imCardPicture.setImageBitmap(cardPicture);
+                    Log.d(TAG, "Deleted? :" + file.delete());
                 }
                 break;
         }
@@ -156,6 +189,14 @@ public class AddCardActivity extends Activity {
 
     public void onImCardPictureClick(View view) {
         Intent photoPickerIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, CardFileContentProvider.CONTENT_URI);
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(CARD_NAME, edCardText.getText().toString());
+        outState.putParcelable(CARD_PICTURE, cardPicture);
+        super.onSaveInstanceState(outState);
     }
 }

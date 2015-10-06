@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,7 +24,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import be.ehb.taskaid.DB.CardDAO;
 import be.ehb.taskaid.DB.TaskDAO;
 import be.ehb.taskaid.R;
 import be.ehb.taskaid.UI.SelectorActivity;
@@ -39,14 +42,17 @@ public class BeaconScanner extends Service {
     private static final int SHOW_TOAST = 99;
     private static final long REMOVE_INTERVAL = 5000;
     private static final int SHOW_TOAST_VIBRATING = 90;
+    private static final int POST_NOTIFICATION = 80;
+    private static final int CANCEL_NOTIFICATION = 70;
     private static Handler mHandler;
-    private Handler mMainHandler;
+    private static Handler mMainHandler;
    // private Callback mCallback;
     private boolean mScanning;
     private BluetoothAdapter mBluetoothAdapter;
 
     private ArrayList<Task> taskArrayList = new ArrayList<>() ;
-    private Map<String, Long> detectedDeviceList = new HashMap<>();
+    private Map<String, Long> detectedDeviceList = new ConcurrentHashMap<>();
+    private int postedNotificationCount;
 
 
     public class Constants {
@@ -80,7 +86,7 @@ public class BeaconScanner extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mHandler = new Handler();
-        mMainHandler = new Handler(Looper.getMainLooper()) {
+        mMainHandler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message message) {
                 if (message.what == SHOW_TOAST){
@@ -89,6 +95,27 @@ public class BeaconScanner extends Service {
                     Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(1000);
                     Toast.makeText(getApplicationContext(), (CharSequence) message.obj, Toast.LENGTH_LONG).show();
+                } else if (message.what == POST_NOTIFICATION) {
+                    Task task = (Task) message.obj;
+                    Log.d(TAG,"Post Notif " + task.toString());
+                    if (task != null){
+                        CardNotification cardNotification = new CardNotification(task);
+
+                        Notification[] notifications = cardNotification.buildNotifications(getApplicationContext());
+
+                        // Post new notifications
+                        for (int i = 0; i < notifications.length; i++) {
+                            NotificationManagerCompat.from(getApplicationContext()).notify(i, notifications[i]);
+                        }
+
+                        // Cancel any that are beyond the current count.
+                        for (int i = notifications.length; i < postedNotificationCount; i++) {
+                            NotificationManagerCompat.from(getApplicationContext()).cancel(i);
+                        }
+                        postedNotificationCount = notifications.length;
+                    }
+                } else if (message.what == CANCEL_NOTIFICATION){
+                    NotificationManagerCompat.from(getApplicationContext()).cancelAll();
                 }
             }
         };
@@ -116,6 +143,11 @@ public class BeaconScanner extends Service {
             Log.i(TAG, "Received Start Foreground Intent ");
 
             taskArrayList.addAll(TaskDAO.getInstance(this).getAll());
+            if (taskArrayList != null) {
+                for (Task t : taskArrayList) {
+                    t.setCards(CardDAO.getInstance(this).getByTaskID(t.getID()));
+                }
+            }
 
             Intent notificationIntent = new Intent(this, SelectorActivity.class);
             notificationIntent.setAction(Constants.MAIN_ACTION);
@@ -187,10 +219,12 @@ public class BeaconScanner extends Service {
         long timeNow = System.currentTimeMillis();
         Log.d(TAG,"Checking detected list");
         for (String device : detectedDeviceList.keySet()){
-            Log.d(TAG,"Removed: " + device + " - TimeStamp: " + detectedDeviceList.get(device) + " Now: " + timeNow + " Difference: " + (timeNow -  detectedDeviceList.get(device)));
+            Log.d(TAG,"Removable?: " + device + " - TimeStamp: " + detectedDeviceList.get(device) + " Now: " + timeNow + " Difference: " + (timeNow -  detectedDeviceList.get(device)));
             if ((detectedDeviceList.get(device) + REMOVE_DELAY) <= timeNow ){
 
                 Message message = mMainHandler.obtainMessage(SHOW_TOAST,"Removed: " + device);
+                message.sendToTarget();
+                message = mMainHandler.obtainMessage(CANCEL_NOTIFICATION);
                 message.sendToTarget();
                 detectedDeviceList.remove(device);
             }
@@ -222,7 +256,9 @@ public class BeaconScanner extends Service {
                             Task task = checkTaskList(device);
                             if (task != null) {
                                 Log.d(TAG, "Task detected: " + task.toString());
-                                Message message = mMainHandler.obtainMessage(SHOW_TOAST_VIBRATING,"Task detected: " + task.toString());
+
+                                //Message message = mMainHandler.obtainMessage(SHOW_TOAST_VIBRATING,"Task detected: " + task.toString());
+                                Message message = mMainHandler.obtainMessage(POST_NOTIFICATION,task);
                                 message.sendToTarget();
                                 detectedDeviceList.put(device.getAddress(),System.currentTimeMillis());
                             }

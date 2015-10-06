@@ -60,5 +60,21 @@
             android:id="@+id/btnStopService"
             android:layout_gravity="center_horizontal"
             android:onClick="onBtnStopService"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show Notif"
+            android:id="@+id/btnNotif"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBtnNotificationClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="File test"
+            android:id="@+id/btnFileTest"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onFileTestClick"/>
     </LinearLayout>
 
